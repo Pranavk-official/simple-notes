@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { RiAddLine, RiStickyNoteLine, RiCloseLine } from 'react-icons/ri'
+import { TopBar } from './components/TopBar'
+import { MobileFAB } from './components/MobileFAB'
 import { notesApi, type Note } from './api/notesApi'
 import { NoteCard } from './components/NoteCard'
 import { NoteForm } from './components/NoteForm'
@@ -54,27 +55,11 @@ export default function App() {
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col">
       {/* ── Top bar ── */}
-      <header className="sticky top-0 z-30 bg-neutral-950/80 backdrop-blur-md border-b border-neutral-800 px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <RiStickyNoteLine className="text-violet-400 text-xl" />
-          <span className="font-semibold text-base tracking-tight">Smart Notes</span>
-          {notes.length > 0 && (
-            <span className="text-xs text-neutral-500 bg-neutral-800 px-1.5 py-0.5 rounded-full">
-              {notes.length}
-            </span>
-          )}
-        </div>
-        <button
-          onClick={() => setShowForm(v => !v)}
-          aria-label={showForm ? 'Close form' : 'New note'}
-          className="flex items-center gap-1.5 bg-violet-600 hover:bg-violet-500 active:scale-95 transition-all duration-150 text-white text-sm font-medium px-3 py-1.5 rounded-lg"
-        >
-          {showForm
-            ? <RiCloseLine className="text-base" />
-            : <RiAddLine className="text-base" />}
-          {showForm ? 'Cancel' : 'New Note'}
-        </button>
-      </header>
+      <TopBar
+        notesCount={notes.length}
+        showForm={showForm}
+        onToggleForm={() => setShowForm(v => !v)}
+      />
 
       {/* ── Main ── */}
       <main className="flex-1 px-4 py-5 max-w-3xl w-full mx-auto">
@@ -108,6 +93,12 @@ export default function App() {
           </div>
         )}
       </main>
+
+      {/* ── Mobile FAB ── */}
+      <MobileFAB
+        showForm={showForm}
+        onToggleForm={() => setShowForm(v => !v)}
+      />
     </div>
   )
 }
