@@ -1,73 +1,88 @@
-# React + TypeScript + Vite
+# simple-notes-frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Mobile-first React frontend for Smart Notes — built with Vite, TypeScript, and Tailwind CSS v4. Communicates with the FastAPI backend through a centralised typed API client.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- 📱 **Mobile-first** — single-column on small screens, 2-column bento grid on `sm` and up
+- 🎨 **Dark theme** — neutral-950 background with violet accents
+- ✨ **Micro-animations** — form slides down on open, cards fade-up with stagger, error banner shakes
+- 🔄 **Loading skeletons** — staggered pulse placeholders while notes are fetched
+- 🗑️ **In-flight spinner** — per-card spinner replaces the delete icon while the API call is pending
+- 🧩 **Component-based** — all UI is split into focused, reusable components
+- 🔌 **API client layer** — `src/api/notesApi.ts` is the single place that calls `fetch()`
 
-## React Compiler
+## Project Structure
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+simple-notes-frontend/
+├── .env.example                   # Env template → copy to .env.local
+├── src/
+│   ├── api/
+│   │   └── notesApi.ts            # Typed API client (list, create, delete)
+│   ├── components/
+│   │   ├── NoteCard.tsx           # Note card with delete button
+│   │   ├── NoteForm.tsx           # Slide-down create form
+│   │   ├── EmptyState.tsx         # Empty state illustration
+│   │   ├── ErrorBanner.tsx        # Dismissable error with shake animation
+│   │   └── SkeletonGrid.tsx       # Staggered loading skeletons
+│   ├── App.tsx                    # State orchestration, layout, top-bar
+│   └── index.css                  # Tailwind v4, Inter font, keyframe animations
+├── index.html
+├── vite.config.ts
+└── package.json
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Setup
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Prerequisites
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- [Bun](https://bun.sh) `1.0+` (or Node 20+ with npm/pnpm)
+- Backend running at `http://localhost:8000` — see [backend README](../simple-notes-backend/README.md)
+
+### 1. Configure environment
+
+```bash
+cp .env.example .env.local
 ```
+
+```env
+# .env.local
+VITE_API_URL=http://localhost:8000e
+```
+
+### 2. Install dependencies
+
+```bash
+bun install
+```
+
+### 3. Run the dev server
+
+```bash
+bun run dev
+# → http://localhost:5173
+```
+
+### 4. Build for production
+
+```bash
+bun run build
+# Output in ./dist
+```
+
+## Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `VITE_API_URL` | `http://localhost:8000` | Base URL for the FastAPI backend |
+
+## Tech Stack
+
+| Package | Version | Purpose |
+|---------|---------|---------|
+| Vite | 8 | Build tool & HMR dev server |
+| React | 19 | UI framework |
+| TypeScript | 5.9 | Type safety |
+| Tailwind CSS | 4 | Utility-first styling |
+| react-icons | 5 | SVG icon library (Remix Icons set) |
