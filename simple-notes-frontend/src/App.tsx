@@ -7,6 +7,7 @@ import { NoteForm } from './components/NoteForm'
 import { EmptyState } from './components/EmptyState'
 import { ErrorBanner } from './components/ErrorBanner'
 import { SkeletonGrid } from './components/SkeletonGrid'
+import { InstallPrompt } from './components/InstallPrompt'
 import './index.css'
 
 export default function App() {
@@ -99,6 +100,9 @@ export default function App() {
         showForm={showForm}
         onToggleForm={() => setShowForm(v => !v)}
       />
+
+      {/* ── Install Prompt ── */}
+      <InstallPrompt />
     </div>
   )
 }
