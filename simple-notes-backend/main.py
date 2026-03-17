@@ -15,7 +15,12 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="Simple Notes API", version="1.0.0", lifespan=lifespan)
+app = FastAPI(
+    title="Simple Notes API",
+    description="A simple API for managing notes. API docs: <http://localhost:8000/docs>",
+    version="1.0.0",
+    lifespan=lifespan
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -26,13 +31,30 @@ app.add_middleware(
 )
 
 
-@app.get("/notes", response_model=list[NoteResponse])
+@app.get("/", tags=["Root"])
+def read_root():
+    """
+    Root endpoint that provides a link to the API documentation.
+    """
+    return {
+        "message": "Welcome to the Simple Notes API",
+        "docs_url": "http://localhost:8000/docs"
+    }
+
+
+@app.get("/notes", response_model=list[NoteResponse], tags=["Notes"])
 def list_notes(db: Session = Depends(get_db)):
+    """
+    Retrieve a list of all notes, ordered by creation date (newest first).
+    """
     return db.query(Note).order_by(Note.created_at.desc()).all()
 
 
-@app.post("/notes", response_model=NoteResponse, status_code=status.HTTP_201_CREATED)
+@app.post("/notes", response_model=NoteResponse, status_code=status.HTTP_201_CREATED, tags=["Notes"])
 def create_note(note: NoteCreate, db: Session = Depends(get_db)):
+    """
+    Create a new note with a title and optional content.
+    """
     db_note = Note(title=note.title, content=note.content)
     db.add(db_note)
     db.commit()
@@ -40,7 +62,7 @@ def create_note(note: NoteCreate, db: Session = Depends(get_db)):
     return db_note
 
 
-@app.delete("/notes/{note_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/notes/{note_id}", status_code=status.HTTP_204_NO_CONTENT, tags=["Notes"])
 def delete_note(note_id: int, db: Session = Depends(get_db)):
     db_note = db.query(Note).filter(Note.id == note_id).first()
     if not db_note:
